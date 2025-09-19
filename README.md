@@ -27,3 +27,4 @@ Test 6: Login cu date incorecte (test negativ)
 ##  Pași de reproducere
 
 Codul sursă și documentația pot fi accesate la:
+https://github.com/ClaudiaRusneac/Proiect_final.git
