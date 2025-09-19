@@ -8,12 +8,12 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
 import java.time.Duration;
-
 /*
  - Clasa de bază pentru teste
  - Aceasta inițializeaza și închide  browserul,
   -moștenită de toate clasele de test.
  */
+
 public class BaseTest {
 
     // Driver-ul WebDriver este static și accesibil din clasele de test care extind BaseTest
@@ -43,14 +43,12 @@ public class BaseTest {
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(0));
     }
 
-
      // Metoda se execută o singură dată, după terminarea tuturor testelor din clasă.
      // Închide browserul
 
     @AfterAll
     public static void tearDown() {
         if (driver != null) {
-            // Închide toate ferestrele browserului și oprește sesiunea WebDriver
             driver.quit();
         }
     }

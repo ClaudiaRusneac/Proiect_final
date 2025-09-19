@@ -8,20 +8,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /*
  * Clasa conține 5 teste separate pentru simularea unui flux complet de cumpărare
- * pe site-ul https://www.saucedemo.com, inclusiv verificarea prețului produsului și logout.
+ * pe site-ul https://www.saucedemo.com
  */
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@TestMethodOrder(MethodOrderer.MethodName.class)
 public class SauceDemoTests extends BaseTest {
-
-    // obiectele pentru paginile folosite în test
-    private LoginPage loginPage;
-    private ProductsPage productsPage;
-    private CartPage cartPage;
-    private CheckoutPage checkoutPage;
-    private ConfirmationPage confirmationPage;
-    private MenuPage menuPage;  // pentru logout
 
     // username, parola, date personale
     private static final String USERNAME = "standard_user";
@@ -30,8 +21,15 @@ public class SauceDemoTests extends BaseTest {
     private static final String LAST_NAME = "Popescu";
     private static final String ZIP_CODE = "12345";
 
-    @BeforeAll
-    public void initPages() {
+    private LoginPage loginPage;
+    private ProductsPage productsPage;
+    private CartPage cartPage;
+    private CheckoutPage checkoutPage;
+    private ConfirmationPage confirmationPage;
+    private MenuPage menuPage;
+
+    @BeforeEach
+    public void setUp() {
         // deschide site-ul
         driver.get("https://www.saucedemo.com/");
 
@@ -41,13 +39,12 @@ public class SauceDemoTests extends BaseTest {
         cartPage = new CartPage(driver);
         checkoutPage = new CheckoutPage(driver);
         confirmationPage = new ConfirmationPage(driver);
-        menuPage = new MenuPage(driver);  // inițializare meniu
+        menuPage = new MenuPage(driver);
     }
 
     // Testul 1: logare cu date corecte
     @Test
-    @Order(1)
-    public void testLogin() {
+    public void test1_Login() {
         // face login
         loginPage.login(USERNAME, PASSWORD);
 
@@ -55,11 +52,12 @@ public class SauceDemoTests extends BaseTest {
         assertFalse(loginPage.isLoginErrorDisplayed(), "Login-ul a eșuat!");
     }
 
-
     // Testul 2: verifică prețul produsului din listă
     @Test
-    @Order(2)
-    public void testVerifyProductPrice() {
+    public void test2_VerifyProductPrice() {
+        // face login
+        loginPage.login(USERNAME, PASSWORD);
+
         // obține prețul primului produs
         String price = productsPage.getProductPrice(0);
 
@@ -68,22 +66,32 @@ public class SauceDemoTests extends BaseTest {
         assertTrue(price.contains("$"), "Prețul produsului nu conține simbolul $!");
     }
 
-    // Testul 3: adaugă un produs în coș și intră în coș
+    // Testul 3: adaugă un produs în coș și verifică prezența în coș
     @Test
-    @Order(3)
-    public void testAddProductToCart() {
+    public void test3_AddProductToCart() {
+        // face login
+        loginPage.login(USERNAME, PASSWORD);
+
         // adaugă primul produs în coș
         productsPage.addProductToCart(0);
 
         // intră în pagina coșului
         productsPage.goToCart();
-    }
 
+        // verifică dacă produsul este în coș
+        assertTrue(cartPage.isCartNotEmpty(), "Coșul este gol!");
+    }
 
     // Testul 4: finalizează comanda completă
     @Test
-    @Order(4)
-    public void testCheckoutAndConfirmOrder() {
+    public void test4_CheckoutAndConfirmOrder() {
+        // face login
+        loginPage.login(USERNAME, PASSWORD);
+
+        // adaugă un produs în coș
+        productsPage.addProductToCart(0);
+        productsPage.goToCart();
+
         // merge la checkout
         cartPage.proceedToCheckout();
 
@@ -102,12 +110,24 @@ public class SauceDemoTests extends BaseTest {
 
     // Testul 5: face logout și verifică revenirea pe pagina de login
     @Test
-    @Order(5)
-    public void testLogout() {
+    public void test5_Logout() {
+        // face login
+        loginPage.login(USERNAME, PASSWORD);
+
         // face logout folosind meniul
         menuPage.logout();
 
         // verifică dacă URL-ul conține pagina de login după logout
         assertTrue(driver.getCurrentUrl().contains("saucedemo.com"), "Nu s-a revenit pe pagina de login după logout!");
+    }
+
+    // Testul 6: login cu date incorecte (test negativ)
+    @Test
+    public void test6_LoginWithInvalidUser() {
+        // încearcă login cu user invalid și parolă greșită
+        loginPage.login("user_necunoscut", "parola_gresita");
+
+        // verifică dacă apare mesajul de eroare
+        assertTrue(loginPage.isLoginErrorDisplayed(), "Aplicatia nu a afișat eroarea corespunzătoare pentru user invalid");
     }
 }

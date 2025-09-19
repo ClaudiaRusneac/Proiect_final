@@ -22,8 +22,8 @@ Test 2: Verificarea prețului produsului din lista de produse
 Test 3: Adăugarea unui produs în coșul de cumpărături
 Test 4: Finalizarea comenzii complete
 Test 5: Logout și verificarea revenirii pe pagina de autentificare
+Test 6: Login cu date incorecte (test negativ)
 
 ##  Pași de reproducere
 
 Codul sursă și documentația pot fi accesate la:
-👉 https://github.com/username/saucedemo-automation

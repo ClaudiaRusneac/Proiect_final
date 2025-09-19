@@ -46,4 +46,9 @@ public class ElementHelper {
     public boolean isPresent(By locator){
         return !driver.findElements(locator).isEmpty();
     }
+
+    // returnează o listă de elemente de pe pagină
+    public java.util.List<WebElement> findElements(By locator) {
+        return driver.findElements(locator);
+    }
 }

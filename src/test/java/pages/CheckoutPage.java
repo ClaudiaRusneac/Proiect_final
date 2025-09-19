@@ -27,7 +27,7 @@ public class CheckoutPage {
     public CheckoutPage(WebDriver driver) {
         helper = new ElementHelper(driver);
     }
-
+     //Metode :
     // completează câmpurile cu detaliile de livrare
     public void enterShippingDetails(String firstName, String lastName, String zipCode) {
         helper.insertText(firstNameField, firstName);
